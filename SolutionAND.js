@@ -13,10 +13,9 @@ function solution (input) {
    })
    //check for no integers
    if (integerArr.length === 0){ return `No integers found in ${input}`}
-   //if its a single digit we can return it without any more work
-   if (integerArr.length ===1 ){return integerArr}
  
-   console.log(integerArr)
+ 
+
 
    let unsortedSiblings = getSiblings(integerArr) // launch recursive function
 
@@ -28,13 +27,17 @@ function solution (input) {
 
     for (let i = 0; i< arr.length; i++){
       const currentInteger = arr[i]
-      const remainingIntegers = arr.slice(0,i).concat(arr.slice(i+1))
-      const remainingIntegersSiblings = getSiblings(remainingIntegers)
-    
-      for (let j=0; j< remainingIntegersSiblings.length; j++){
-        const siblingArray = [currentInteger].concat(remainingIntegersSiblings[j])
-        result.push(siblingArray.join(''))
+      const seenIntegers = arr.slice(0,i)
+      if (!seenIntegers.some((int) => currentInteger===int)) {
+        const remainingIntegers = seenIntegers.concat(arr.slice(i+1))
+        const remainingIntegersSiblings = getSiblings(remainingIntegers)
+      
+        for (let j=0; j< remainingIntegersSiblings.length; j++){
+          const siblingArray = [currentInteger].concat(remainingIntegersSiblings[j])
+          result.push(siblingArray.join(''))
+        }  
       }
+      
     }
     return result
    }
