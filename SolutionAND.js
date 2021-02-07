@@ -2,8 +2,6 @@
 * The following is the function where the solution shall be written
 */
 
-const { string } = require("check-types")
-const { resourceLimits } = require("worker_threads")
 
 function solution (input) {
 
@@ -15,35 +13,43 @@ function solution (input) {
    })
    //check for no integers
    if (integerArr.length === 0){ return `No integers found in ${input}`}
+   //if its a single digit we can return it without any more work
+   if (integerArr.length ===1 ){return integerArr}
  
-   return getSiblings(integerArr) // launch recursive function
+   console.log(integerArr)
+
+   let unsortedSiblings = getSiblings(integerArr) // launch recursive function
 
    function getSiblings(arr) {
-    let siblings = [] //array to collect siblings found
+    let result = []
+    //set base cases
+    if (arr.length === 0) return []
+    if (arr.length === 1) return [arr]
 
-    if (integerArr === 1) { //base condition
-      siblings.push(integerArr)
-      return siblings
-    }
-
-    for (let i = 0; i < integerArr.length; i++){ //
-      let firstInteger = integerArr[i];
-      let integersRemaining  = numbers.filter((integer) => {
-        return integer!==integerArr[i]
-      });
-      let innerSiblings = getSiblings(integersRemaining)
-      for (let j=0;j< innerSiblings.length; j++){
-        siblings.push(firstInteger + innerSiblings[j])
+    for (let i = 0; i< arr.length; i++){
+      const currentInteger = arr[i]
+      const remainingIntegers = arr.slice(0,i).concat(arr.slice(i+1))
+      const remainingIntegersSiblings = getSiblings(remainingIntegers)
+    
+      for (let j=0; j< remainingIntegersSiblings.length; j++){
+        const siblingArray = [currentInteger].concat(remainingIntegersSiblings[j])
+        result.push(siblingArray.join(''))
       }
     }
-    return siblings
-   } 
+    return result
+   }
 
-   
-   
-  return null; 
+  //return the siblings sorted
+  return unsortedSiblings.sort( (a,b) => b-a)
 }
 
+
 // some example inputs
-console.log(solution('326')); // expected output 632,623,362,326,263,236
+console.log(solution('343')); 
+// expected output 632,623,362,326,263,236
 console.log(solution('A 3B2 C6D')); // expected output 632,623,362,326,263,236
+
+
+// return Object.keys(siblingTracker).sort( (a,b) => {
+//   return -1
+// })
